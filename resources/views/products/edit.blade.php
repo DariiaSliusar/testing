@@ -14,9 +14,16 @@
             @enderror
         </div>
         <div class="mb-3">
-            <label for="price" class="form-label">Price</label>
-            <input type="number" name="price" id="price" class="form-control" value="{{ old('price', $product->price) }}" step="0.01" min="0" required>
-            @error('price')
+            <label for="price_usd" class="form-label">Price (USD)</label>
+            <input type="number" name="price_usd" id="price_usd" class="form-control" value="{{ old('price_usd', $product->price_usd) }}" step="0.01" min="0" required>
+            @error('price_usd')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="mb-3">
+            <label for="price_eur" class="form-label">Price (EUR)</label>
+            <input type="number" name="price_eur" id="price_eur" class="form-control" value="{{ old('price_eur', $product->price_eur) }}" step="0.01" min="0" required>
+            @error('price_eur')
                 <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>

@@ -27,7 +27,8 @@ class ProductsTest extends TestCase
     {
         $product = Product::create([
             'name' => 'Product 1',
-            'price' => 123,
+            'price_usd' => 123,
+            'price_eur' => 111,
         ]);
         $response = $this->get('/products');
 
