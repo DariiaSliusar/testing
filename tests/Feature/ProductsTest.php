@@ -25,14 +25,20 @@ class ProductsTest extends TestCase
 
     public function testProductsPageContainNonEmptyTable(): void
     {
-        Product::create([
-            'name' => 'Test Product',
-            'price' => 99,
+        $product = Product::create([
+            'name' => 'Product 1',
+            'price' => 123,
         ]);
         $response = $this->get('/products');
 
         $response->assertStatus(200);
 
         $response->assertDontSee(__('No products found'));
+
+        $response->assertSee('Product 1');
+
+        $response->assertViewHas('products', function ($collection) use ($product) {
+            return $collection->contains($product);
+        });
     }
 }
