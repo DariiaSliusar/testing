@@ -11,6 +11,18 @@
         <div class="container">
             <a class="navbar-brand" href="/">Products App</a>
             <a class="nav-link" href="{{ route('products.index') }}">Products</a>
+            <div class="ms-auto">
+                @auth
+                    <span class="me-2">Hello, {{ Auth::user()->name }}</span>
+                    <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+                        @csrf
+                        <button type="submit" class="btn btn-link">Logout</button>
+                    </form>
+                @else
+                    <a class="nav-link d-inline" href="{{ route('login') }}">Login</a>
+                    <a class="nav-link d-inline" href="{{ route('register') }}">Register</a>
+                @endauth
+            </div>
         </div>
     </nav>
     <main>

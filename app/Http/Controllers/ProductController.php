@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
@@ -12,7 +13,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        Log::info('ProductController@index called');
+        $products = Product::paginate(10);
         return view('products.index', compact('products'));
     }
 
@@ -29,12 +31,14 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        Log::info('ProductController@store called', ['request' => $request->all()]);
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'price_usd' => 'required|numeric|min:0',
             'price_eur' => 'required|numeric|min:0',
         ]);
         Product::create($validated);
+        Log::info('Product created', $validated);
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
 
@@ -43,6 +47,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
+        Log::info('ProductController@show called', ['id' => $id]);
         $product = Product::findOrFail($id);
         return view('products.show', compact('product'));
     }
@@ -52,6 +57,7 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
+        Log::info('ProductController@edit called', ['id' => $id]);
         $product = Product::findOrFail($id);
         return view('products.edit', compact('product'));
     }
