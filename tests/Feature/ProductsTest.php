@@ -123,6 +123,36 @@ class ProductsTest extends TestCase
         $this->assertEquals($product['price_eur'], $lastProduct->price_eur);
     }
 
+    public function testProductEditContainCorrectValues()
+    {
+        $product = Product::factory()->create();
+
+        $response = $this->actingAs($this->admin)->get('products/' . $product->id . '/edit');
+
+        $response->assertStatus(200);
+
+        $response->assertSee('value="' . $product->name . '"', false);
+        $response->assertSee('value="' . $product->price_usd . '"', false);
+        $response->assertSee('value="' . $product->price_eur . '"', false);
+
+        $response->assertViewHas('product', $product);
+    }
+
+    public function testProductUpdateValidationErrorRedirectBackToForm()
+    {
+        $product = Product::factory()->create();
+
+        $response = $this->actingAs($this->admin)->put('products/' . $product->id, [
+            'name' => '',
+            'price_usd' => '',
+            'price_eur' => '',
+        ]);
+
+        $response->assertStatus(302);
+        $response->assertSessionHasErrors(['name']);
+        $response->assertInvalid(['name', 'price_usd', 'price_eur'] );
+    }
+
     private function createUser(bool $isAdmin = false): User
     {
         return User::factory()->create([
