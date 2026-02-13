@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Http\Requests\ProductRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -28,15 +29,10 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'price_usd' => 'required|numeric|min:0',
-            'price_eur' => 'required|numeric|min:0',
-        ]);
-        Product::create($validated);
-        Log::info('Product created', $validated);
+        Product::create($request->validated());
+
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
 
@@ -61,13 +57,9 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(ProductRequest $request, $id)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'price_usd' => 'required|numeric|min:0',
-            'price_eur' => 'required|numeric|min:0',
-        ]);
+        $validated = $request->validated();
         $product = Product::findOrFail($id);
         $product->update($validated);
         return redirect()->route('products.index')->with('success', 'Product updated successfully.');
