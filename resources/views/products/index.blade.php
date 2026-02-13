@@ -6,7 +6,10 @@
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
-    <a href="{{ route('products.create') }}" class="btn btn-primary mb-3">Add Product</a>
+    @if(auth()->user()->is_admin)
+        <a href="{{ route('products.create') }}" class="btn btn-primary mb-3">Add Product</a>
+    @endif
+
     <table class="table table-bordered">
         <thead>
             <tr>
