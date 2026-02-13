@@ -153,6 +153,19 @@ class ProductsTest extends TestCase
         $response->assertInvalid(['name', 'price_usd', 'price_eur'] );
     }
 
+    public function testProductDeleteSuccessful()
+    {
+        $product = Product::factory()->create();
+
+        $response = $this->actingAs($this->admin)->delete('products/' . $product->id);
+
+        $response->assertStatus(302);
+        $response->assertRedirect('/products');
+
+        $this->assertDatabaseMissing('products', $product->toArray());
+        $this->assertDatabaseCount('products', 0);
+    }
+
     private function createUser(bool $isAdmin = false): User
     {
         return User::factory()->create([

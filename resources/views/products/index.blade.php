@@ -27,15 +27,17 @@
                     <td>{{ $product->name }}</td>
                     <td>{{ number_format($product->price_usd, 2) }}</td>
                     <td>{{ number_format($product->price_eur, 2) }}</td>
-                    <td>
-                        <a href="{{ route('products.show', $product) }}" class="btn btn-info btn-sm">View</a>
-                        <a href="{{ route('products.edit', $product) }}" class="btn btn-warning btn-sm">Edit</a>
-                        <form action="{{ route('products.destroy', $product) }}" method="POST" style="display:inline-block;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
-                        </form>
-                    </td>
+                    @if(auth()->user()->is_admin)
+                        <td>
+                            <a href="{{ route('products.show', $product) }}" class="btn btn-info btn-sm">View</a>
+                            <a href="{{ route('products.edit', $product) }}" class="btn btn-warning btn-sm">Edit</a>
+                            <form action="{{ route('products.destroy', $product) }}" method="POST" style="display:inline-block;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
+                            </form>
+                        </td>
+                    @endif
                 </tr>
             @empty
                 <tr>
