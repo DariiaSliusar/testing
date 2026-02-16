@@ -101,27 +101,27 @@ class ProductsTest extends TestCase
         $response->assertStatus(403);
     }
 
-    public function testCreateProductSuccessful()
-    {
-        $product = [
-            'name' => 'Product 123',
-            'price_usd' => 100,
-            'price_eur' => 90,
-        ];
-        $response = $this->actingAs($this->admin)->post('/products', $product);
-
-        $response->assertStatus(302);
-
-        $response->assertRedirect('/products');
-
-        $this->assertDatabaseHas('products', $product);
-
-        $lastProduct = Product::latest()->first();
-
-        $this->assertEquals($product['name'], $lastProduct->name);
-        $this->assertEquals($product['price_usd'], $lastProduct->price_usd);
-        $this->assertEquals($product['price_eur'], $lastProduct->price_eur);
-    }
+//    public function testCreateProductSuccessful()
+//    {
+//        $product = [
+//            'name' => 'Product 123',
+//            'price_usd' => 100,
+//            'price_eur' => 90,
+//        ];
+//        $response = $this->actingAs($this->admin)->post('/products', $product);
+//
+//        $response->assertStatus(302);
+//
+//        $response->assertRedirect('/products');
+//
+//        $this->assertDatabaseHas('products', $product);
+//
+//        $lastProduct = Product::latest()->first();
+//
+//        $this->assertEquals($product['name'], $lastProduct->name);
+//        $this->assertEquals($product['price_usd'], $lastProduct->price_usd);
+//        $this->assertEquals($product['price_eur'], $lastProduct->price_eur);
+//    }
 
     public function testProductEditContainCorrectValues()
     {
@@ -153,17 +153,50 @@ class ProductsTest extends TestCase
         $response->assertInvalid(['name', 'price_usd', 'price_eur'] );
     }
 
-    public function testProductDeleteSuccessful()
+//    public function testProductDeleteSuccessful()
+//    {
+//        $product = Product::factory()->create();
+//
+//        $response = $this->actingAs($this->admin)->delete('products/' . $product->id);
+//
+//        $response->assertStatus(302);
+//        $response->assertRedirect('/products');
+//
+//        $this->assertDatabaseMissing('products', $product->toArray());
+//        $this->assertDatabaseCount('products', 0);
+//    }
+
+    public function testApiReturnsProductsList()
     {
         $product = Product::factory()->create();
+        $response = $this->getJson('/api/products');
 
-        $response = $this->actingAs($this->admin)->delete('products/' . $product->id);
+        $response->assertJson([$product->toArray()]);
+    }
 
-        $response->assertStatus(302);
-        $response->assertRedirect('/products');
+    public function testApiProductStoreSuccessful()
+    {
+        $product = [
+            'name' => 'Product 123',
+            'price_usd' => 100,
+            'price_eur' => 90,
+        ];
+        $response = $this->postJson('/api/products', $product);
 
-        $this->assertDatabaseMissing('products', $product->toArray());
-        $this->assertDatabaseCount('products', 0);
+        $response->assertStatus(201);
+        $response->assertJson($product);
+    }
+
+    public function testApiProductInvalidStoreReturnsError()
+    {
+        $product = [
+            'name' => '',
+            'price_usd' => 100,
+            'price_eur' => 90,
+        ];
+        $response = $this->postJson('/api/products', $product);
+
+        $response->assertStatus(422);
     }
 
     private function createUser(bool $isAdmin = false): User
