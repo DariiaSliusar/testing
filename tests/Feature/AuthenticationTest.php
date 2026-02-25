@@ -1,0 +1,8 @@
+<?php
+
+//test('unauthenticated user cannot access products', function () {
+//    $this->get('/products')->assertRedirect('/login');
+//});
+
+test('unauthenticated user cannot access products')
+    ->get('/products')->assertRedirect('/login');
